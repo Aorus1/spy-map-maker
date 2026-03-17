@@ -622,21 +622,26 @@ function importMap(text) {
         alert(`Map must have ${GRID_SIZE} lines, found ${lines.length}`);
         return false;
     }
-    const newGrid = [];
-    for (let r = 0; r < GRID_SIZE; r++) {
-        const line = lines[r];
+    // Validate first
+    for (let i = 0; i < GRID_SIZE; i++) {
+        const line = lines[i];
         if (line.length < GRID_SIZE) {
-            alert(`Line ${r + 1} must have ${GRID_SIZE} characters, found ${line.length}`);
+            alert(`Line ${i + 1} must have ${GRID_SIZE} characters, found ${line.length}`);
             return false;
         }
-        newGrid[r] = [];
-        for (let c = 0; c < GRID_SIZE; c++) {
-            const ch = line[c];
-            if (!'nmwspt'.includes(ch)) {
-                alert(`Invalid character '${ch}' at row ${r + 1}, col ${c + 1}`);
+        for (let j = 0; j < GRID_SIZE; j++) {
+            if (!'nmwspt'.includes(line[j])) {
+                alert(`Invalid character '${line[j]}' at line ${i + 1}, col ${j + 1}`);
                 return false;
             }
-            newGrid[r][c] = ch;
+        }
+    }
+    // Transpose on import: file line index = X, char index = Y
+    const newGrid = [];
+    for (let r = 0; r < GRID_SIZE; r++) {
+        newGrid[r] = [];
+        for (let c = 0; c < GRID_SIZE; c++) {
+            newGrid[r][c] = lines[c][r];
         }
     }
     saveUndo();
@@ -646,9 +651,13 @@ function importMap(text) {
 }
 
 function exportMap() {
+    // Transpose: simulator treats line index as X, char index as Y
     let text = '';
-    for (let r = 0; r < GRID_SIZE; r++) {
-        text += grid[r].join('') + '\n';
+    for (let c = 0; c < GRID_SIZE; c++) {
+        for (let r = 0; r < GRID_SIZE; r++) {
+            text += grid[r][c];
+        }
+        text += '\n';
     }
     return text;
 }
