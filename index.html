@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spy Map Maker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="left-panel">
+            <h3>Tools</h3>
+            <div class="tool-group">
+                <button class="tool-btn active" data-tool="pencil" title="Pencil (single tile)">&#9998; Pencil</button>
+                <button class="tool-btn" data-tool="freedraw" title="Free Draw (click-drag)">&#9999; Free Draw</button>
+                <button class="tool-btn" data-tool="line" title="Line (click start, click end)">&#9585; Line</button>
+                <button class="tool-btn" data-tool="rect-outline" title="Rectangle Outline">&#9633; Rect Outline</button>
+                <button class="tool-btn" data-tool="rect-filled" title="Rectangle Filled">&#9632; Rect Filled</button>
+                <button class="tool-btn" data-tool="fill" title="Flood Fill">&#9686; Flood Fill</button>
+                <button class="tool-btn" data-tool="eraser" title="Eraser (clears to normal)">&#9003; Eraser</button>
+                <button class="tool-btn" data-tool="grab" title="Grab (pan canvas)">&#9995; Grab</button>
+            </div>
+
+            <h3>Tile Type</h3>
+            <div class="tile-group">
+                <button class="tile-btn" data-tile="n" title="Clear"><span class="tile-swatch" style="background:#b0b0b0"></span> Clear</button>
+                <button class="tile-btn active" data-tile="m" title="Mud"><span class="tile-swatch" style="background:#8B6914"></span> Mud</button>
+                <button class="tile-btn" data-tile="w" title="Water"><span class="tile-swatch" style="background:#4a90d9"></span> Water</button>
+                <button class="tile-btn" data-tile="s" title="Starting"><span class="tile-swatch" style="background:#4CAF50"></span> Starting</button>
+            </div>
+
+            <h3>Special Tiles</h3>
+            <div class="tile-group">
+                <button class="tile-btn" data-tile="p" title="Package (exactly 1)"><span class="tile-swatch" style="background:#FF9800"></span> Package</button>
+                <button class="tile-btn" data-tile="t" title="Target (exactly 1)"><span class="tile-swatch" style="background:#f44336"></span> Target</button>
+            </div>
+
+            <h3>Info</h3>
+            <div id="info-panel">
+                <div>Starting cells: <span id="start-count">0</span>/30</div>
+                <div>Package: <span id="package-status">not placed</span></div>
+                <div>Target: <span id="target-status">not placed</span></div>
+                <div>Cursor: <span id="cursor-pos">-</span></div>
+            </div>
+        </div>
+
+        <div id="canvas-container">
+            <canvas id="grid-canvas"></canvas>
+        </div>
+
+        <div id="bottom-bar">
+            <button id="btn-validate">Validate</button>
+            <button id="btn-import">Import map.txt</button>
+            <button id="btn-export">Download map.txt</button>
+            <button id="btn-export-java">Download MapGenerator.java</button>
+            <button id="btn-clear">Clear All</button>
+            <input type="file" id="file-input" accept=".txt" style="display:none">
+            <div id="validation-msg"></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
