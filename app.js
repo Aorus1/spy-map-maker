@@ -404,6 +404,33 @@ container.addEventListener('wheel', (e) => {
 }, { passive: false });
 
 // --- Keyboard shortcuts ---
+const keysHeld = new Set();
+let panAnimId = null;
+const PAN_PX_PER_SEC = 400;
+
+function panLoop(timestamp) {
+    if (!panLoop.lastTime) panLoop.lastTime = timestamp;
+    const dt = (timestamp - panLoop.lastTime) / 1000;
+    panLoop.lastTime = timestamp;
+
+    let dx = 0, dy = 0;
+    if (keysHeld.has('a') || keysHeld.has('arrowleft'))  dx += 1;
+    if (keysHeld.has('d') || keysHeld.has('arrowright')) dx -= 1;
+    if (keysHeld.has('w') || keysHeld.has('arrowup'))   dy += 1;
+    if (keysHeld.has('s') || keysHeld.has('arrowdown')) dy -= 1;
+
+    if (dx !== 0 || dy !== 0) {
+        const speed = PAN_PX_PER_SEC * dt;
+        panX += dx * speed;
+        panY += dy * speed;
+        applyTransform();
+        panAnimId = requestAnimationFrame(panLoop);
+    } else {
+        panAnimId = null;
+        panLoop.lastTime = null;
+    }
+}
+
 document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) {
         if (e.key === 'z') { e.preventDefault(); undo(); }
@@ -415,20 +442,23 @@ document.addEventListener('keydown', (e) => {
         previewCells = [];
         render();
     }
-    const PAN_SPEED = 30;
-    const panKeys = {
-        'ArrowLeft': [PAN_SPEED, 0], 'a': [PAN_SPEED, 0],
-        'ArrowRight': [-PAN_SPEED, 0], 'd': [-PAN_SPEED, 0],
-        'ArrowUp': [0, PAN_SPEED], 'w': [0, PAN_SPEED],
-        'ArrowDown': [0, -PAN_SPEED], 's': [0, -PAN_SPEED],
-    };
-    if (panKeys[e.key]) {
-        e.preventDefault();
-        const [dx, dy] = panKeys[e.key];
-        panX += dx;
-        panY += dy;
-        applyTransform();
+    if (!e.ctrlKey && !e.metaKey) {
+        const key = e.key.toLowerCase();
+        if (['a','d','w','s','arrowleft','arrowright','arrowup','arrowdown'].includes(key)) {
+            e.preventDefault();
+            if (!keysHeld.has(key)) {
+                keysHeld.add(key);
+                if (!panAnimId) {
+                    panLoop.lastTime = null;
+                    panAnimId = requestAnimationFrame(panLoop);
+                }
+            }
+        }
     }
+});
+
+document.addEventListener('keyup', (e) => {
+    keysHeld.delete(e.key.toLowerCase());
 });
 
 // --- Tool/tile selection ---
