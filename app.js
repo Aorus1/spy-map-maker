@@ -415,6 +415,20 @@ document.addEventListener('keydown', (e) => {
         previewCells = [];
         render();
     }
+    const PAN_SPEED = 30;
+    const panKeys = {
+        'ArrowLeft': [PAN_SPEED, 0], 'a': [PAN_SPEED, 0],
+        'ArrowRight': [-PAN_SPEED, 0], 'd': [-PAN_SPEED, 0],
+        'ArrowUp': [0, PAN_SPEED], 'w': [0, PAN_SPEED],
+        'ArrowDown': [0, -PAN_SPEED], 's': [0, -PAN_SPEED],
+    };
+    if (panKeys[e.key]) {
+        e.preventDefault();
+        const [dx, dy] = panKeys[e.key];
+        panX += dx;
+        panY += dy;
+        applyTransform();
+    }
 });
 
 // --- Tool/tile selection ---
