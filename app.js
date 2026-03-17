@@ -703,7 +703,14 @@ document.getElementById('btn-export').addEventListener('click', () => {
 });
 
 document.getElementById('btn-export-java').addEventListener('click', () => {
-    const java = `package spy.kr;
+    const name = prompt('Enter map folder name (no spaces, e.g. "kr").\nThis becomes the path: spy/NAME/map.txt');
+    if (!name) return;
+    const trimmed = name.trim();
+    if (!trimmed || /\s/.test(trimmed)) {
+        alert('Folder name cannot be empty or contain spaces.');
+        return;
+    }
+    const java = `package spy.${trimmed};
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -716,7 +723,7 @@ import spy.sim.Point;
 
 public class MapGenerator implements spy.sim.MapGenerator {
 
-\tpublic static final String PATH = "spy/kr/map.txt";
+\tpublic static final String PATH = "spy/${trimmed}/map.txt";
 
 \tprotected List<Point> waterCells;
 \tprotected List<Point> muddyCells;
